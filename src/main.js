@@ -1,29 +1,50 @@
-import { getPeople } from "./api/swapi.js";
+import { getMovies } from "./api/swapi.js";
 import "./style.css";
 import Home from "./view/HomePage.js";
-import PeopleList from "./view/PeopleList.js";
+import MoviesCard from "./view/moviesCard.js";
+
 
 const app = document.getElementById("app");
-function renderHome() {
-  app.innerHTML = Home();
+document.addEventListener("DOMContentLoaded", () => {
+  const navbarToggler = document.querySelector(".navbar-toggler");
+  const navContent = document.querySelector("#navbarSupportedContent");
+  const moviesCard = document.querySelector("#moviesCard");
 
-document.querySelector("#moviesCard").addEventListener("click", (e) => {
-  const icon = e.target.closest("#favIcon");
+function navbarToggle() {
+
+  navContent.classList.toggle("show");
+}
+
+
+
+function favoriteToggle(event) {
+  const btn = event.target.closest("button[data-serial]");
+  if (!btn) return;
+
+  const serial = btn.dataset.serial;
+  const icon = document.querySelector(`#favIcon-${CSS.escape(serial)}`);
   if (!icon) return;
 
   icon.classList.toggle("bi-heart");
   icon.classList.toggle("bi-heart-fill");
+}
+
+document.addEventListener("click", favoriteToggle);
+navbarToggler.addEventListener("click", navbarToggle);
+
+
 });
 
-document.querySelector(".navbar-toggler").addEventListener("click", (e) => {
-  e.preventDefault();
-  const navContent = document.querySelector("#navbarSupportedContent");
-  if (navContent.classList.contains("show")) {
-    navContent.classList.remove("show");
-  } else {
-    navContent.classList.add("show");
-  }
-});
+
+
+
+
+
+function renderHome() {
+
+  app.innerHTML = Home();
+
+
 
 function handleStarClick(event) {
   if (event.target.classList.contains("star")) {
@@ -40,12 +61,12 @@ function handleStarClick(event) {
 }
 
 document.addEventListener("click", handleStarClick);
+
+
+
+
 }
 renderHome();
 
-getPeople().then((people) => {
-  const peopleListHTML = PeopleList(people);
-  const peopleListContainer = document.createElement("div");
-  peopleListContainer.innerHTML = peopleListHTML;
-  app.appendChild(peopleListContainer);
-});
+
+
