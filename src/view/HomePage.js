@@ -5,7 +5,7 @@ export default function Home(){
 
   return(
     `${NavBar()}
-    <main className= "container">
+    <main class= "container">
      ${MoviesCard()}
       <h2>Footer</h2>
       </main>
