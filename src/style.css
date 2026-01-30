@@ -42,3 +42,9 @@ gap: 20px;
 
 
 }
+
+.star {
+  font-size: 24px;
+  color: #ffd700;
+  cursor: pointer;
+}
