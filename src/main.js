@@ -1,23 +1,22 @@
+import { getPeople } from "./api/swapi.js";
 import "./style.css";
 import Home from "./view/HomePage.js";
 import PeopleList from "./view/PeopleList.js";
-import { getPeople } from "./api/swapi.js";
 
 const app = document.getElementById("app");
-
-async function renderHome() {
-  // 1) Rita ut grundlayout först
+function renderHome() {
   app.innerHTML = Home();
 
-  // 2) Hitta platsen där content ska in
-  const appContent = document.getElementById("appContent");
-  const statusText = document.querySelector("main p.text-muted");
+document.querySelector("#moviesCard").addEventListener("click", (e) => {
+  const icon = e.target.closest("#favIcon");
+  if (!icon) return;
 
   icon.classList.toggle("bi-heart");
   icon.classList.toggle("bi-heart-fill");
 });
 
 document.querySelector(".navbar-toggler").addEventListener("click", (e) => {
+  e.preventDefault();
   const navContent = document.querySelector("#navbarSupportedContent");
   if (navContent.classList.contains("show")) {
     navContent.classList.remove("show");
@@ -41,4 +40,12 @@ function handleStarClick(event) {
 }
 
 document.addEventListener("click", handleStarClick);
+}
+renderHome();
 
+getPeople().then((people) => {
+  const peopleListHTML = PeopleList(people);
+  const peopleListContainer = document.createElement("div");
+  peopleListContainer.innerHTML = peopleListHTML;
+  app.appendChild(peopleListContainer);
+});

@@ -1,3 +1,7 @@
+import NavBar from "./NavbarPage.js";
+import MoviesCard from "./moviesCard.js";
+
+
 export default function Home(){
   return `
     ${NavBar()}
