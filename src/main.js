@@ -13,24 +13,32 @@ async function renderHome() {
   const appContent = document.getElementById("appContent");
   const statusText = document.querySelector("main p.text-muted");
 
-  try {
-    // 3) Hämta data
-    const data = await getPeople(1);
+  icon.classList.toggle("bi-heart");
+  icon.classList.toggle("bi-heart-fill");
+});
 
-    // 4) Bygg listan och lägg in den
-    appContent.innerHTML = PeopleList(data.results);
+document.querySelector(".navbar-toggler").addEventListener("click", (e) => {
+  const navContent = document.querySelector("#navbarSupportedContent");
+  if (navContent.classList.contains("show")) {
+    navContent.classList.remove("show");
+  } else {
+    navContent.classList.add("show");
+  }
+});
 
-    // 5) Uppdatera text
-    statusText.textContent = `Visar ${data.results.length} karaktärer.`;
-  } catch (err) {
-    console.error(err);
-    statusText.textContent = "Något gick fel när vi hämtade data.";
-    appContent.innerHTML = `
-      <div class="alert alert-danger" role="alert">
-        Kunde inte hämta karaktärer. Testa igen senare.
-      </div>
-    `;
+function handleStarClick(event) {
+  if (event.target.classList.contains("star")) {
+    const selectedValue = event.target.getAttribute("data-value");
+    const stars = event.target.parentElement.querySelectorAll(".star");
+    stars.forEach((star) => {
+      if (star.getAttribute("data-value") <= selectedValue) {
+        star.style.color = "#ffd700"; // Highlight color
+      } else {
+        star.style.color = "#d7d7d7"; // Default color
+      }
+    });
   }
 }
 
-renderHome();
+document.addEventListener("click", handleStarClick);
+
