@@ -1,4 +1,4 @@
-import "./styles/style.css";
+import "./style.css";
 import Home from "./view/HomePage.js";
 import PeopleList from "./view/PeopleList.js";
 import { getPeople } from "./api/swapi.js";
