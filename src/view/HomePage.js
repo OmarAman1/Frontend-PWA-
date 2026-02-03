@@ -9,15 +9,11 @@ export default function Home(){
   return `
     ${NavBar()}
     <main class="container">
-      <h1>Home Page</h1>
-      <h1 class="page-title">Movie Universe</h1>
       <section id="moviesSection">
       </section>
-
-      <h2>Footer</h2>
       <footer class="site-footer">
         <div class="footer-brand">
-          <h2>CineScope</h2>
+          <h2>Harry Potter Epics</h2>
           <p>Watchlists, trailers and stories from your favorite worlds.</p>
         </div>
 
