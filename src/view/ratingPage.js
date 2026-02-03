@@ -1,10 +1,14 @@
 
 
 // display rating ★★★★★/✩✩✩✩✩ for movies
-export default function ratingPage() {
+export default function ratingPage(movieId, options = {}) {
+  const { interactive = true } = options;
+  const classes = interactive ? "stars rating-input" : "stars rating-readonly";
+  const ratingAttrs = interactive ? "data-rating-input" : "";
+
   return `
     <div class="rating-page">
-      <div class="stars">
+      <div class="${classes}" ${ratingAttrs} data-movie-id="${movieId}">
         <span class="star" data-value="1">&#9733;</span>
         <span class="star" data-value="2">&#9733;</span>
         <span class="star" data-value="3">&#9733;</span>
@@ -14,5 +18,4 @@ export default function ratingPage() {
     </div>
   `;
 }
-
 

@@ -1,6 +1,7 @@
 const DB_NAME = "movies-app-db";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = "favorites";
+const RATINGS_STORE = "ratings";
 
 function openDb() {
   return new Promise((resolve, reject) => {
@@ -10,6 +11,9 @@ function openDb() {
       const db = request.result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, { keyPath: "movieKey" });
+      }
+      if (!db.objectStoreNames.contains(RATINGS_STORE)) {
+        db.createObjectStore(RATINGS_STORE, { keyPath: "movieKey" });
       }
     };
 
@@ -22,7 +26,12 @@ function getMovieKey(movieOrKey) {
   if (typeof movieOrKey === "string" || typeof movieOrKey === "number") {
     return String(movieOrKey);
   }
-  return String(movieOrKey?.id ?? movieOrKey?.serial ?? "");
+  return String(
+    movieOrKey?.movieKey ??
+      movieOrKey?.id ??
+      movieOrKey?.serial ??
+      `${movieOrKey?.title ?? ""}-${movieOrKey?.release_date ?? ""}`.trim()
+  );
 }
 
 export function getKeyFromMovie(movie) {
