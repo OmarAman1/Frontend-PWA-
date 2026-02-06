@@ -36,3 +36,57 @@ self.addEventListener("activate", (event) => {
 
   self.clients.claim();
 });
+
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // A) Cache API-svar (cache-first)
+  if (url.origin === "https://potterhead-api.vercel.app") {
+    event.respondWith(cacheFirst(req, API_CACHE));
+    return;
+  }
+
+  // B) För appens egna filer (same-origin), kör "runtime cache"
+  if (url.origin === self.location.origin) {
+    event.respondWith(runtimeCache(req));
+    return;
+  }
+});
+
+// ---- Hjälpfunktioner ----
+
+// Cache-first = försök cache först, annars hämta nät och spara
+async function cacheFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+
+  const res = await fetch(request);
+  // Spara bara om det gick bra
+  if (res.ok) cache.put(request, res.clone());
+  return res;
+}
+
+// Runtime cache för appens egna filer:
+// - försök nät först, om offline → ta cache
+async function runtimeCache(request) {
+  const cache = await caches.open(RUNTIME_CACHE);
+
+  try {
+    const res = await fetch(request);
+    if (res.ok) cache.put(request, res.clone());
+    return res;
+  } catch (err) {
+    const cached = await cache.match(request);
+
+    // Om det är en sidnavigering (refresh på en route) returnera "/" som fallback
+    if (!cached && request.mode === "navigate") {
+      const shell = await caches.open(APP_SHELL_CACHE);
+      return shell.match("/");
+    }
+
+    return cached || Response.error();
+  }
+}
+
