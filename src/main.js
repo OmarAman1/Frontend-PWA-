@@ -13,6 +13,20 @@ let moviesCache = null;
 let favoriteKeySet = new Set();
 let ratingMap = new Map();
 
+// src/main.js
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("/sw.js");
+      console.log("✅ Service Worker registrerad:", reg.scope);
+    } catch (err) {
+      console.log("❌ Service Worker kunde inte registreras:", err);
+    }
+  });
+}
+
+
 function escapeHtml(s = "") {
   return String(s)
     .replaceAll("&", "&amp;")
