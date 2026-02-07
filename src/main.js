@@ -5,27 +5,68 @@ import MoviesCard from "./view/moviesCard.js";
 import MovieDetailsPage from "./view/movieDetailsPage.js";
 import TopRatedPage from "./view/topRatedPage.js";
 import FavoritesPage from "./view/favoritesPage.js";
-import { getAllFavorites, getKeyFromMovie, removeFavorite, saveFavorite } from "./db/favoritesDb.js";
+import {
+  getAllFavorites,
+  getKeyFromMovie,
+  removeFavorite,
+  saveFavorite,
+} from "./db/favoritesDb.js";
 import { getAllRatings, saveRating } from "./db/ratingsDb.js";
 
+/*
+   OFFLINE BANNER (User story: tydlig feedback när offline)
+*/
+const offlineRoot = document.getElementById("offline-banner-root");
+
+function renderOfflineBanner() {
+  if (!offlineRoot) return;
+
+  // navigator.onLine = true betyder online, false betyder offline
+  const isOnline = navigator.onLine;
+
+  if (isOnline) {
+    offlineRoot.innerHTML = ""; // ta bort bannern
+    return;
+  }
+
+  // Visa banner när offline
+  offlineRoot.innerHTML = `
+    <div role="alert" class="offline-banner">
+      ⚠️ Du är offline. Appen kan ha begränsad funktion.
+    </div>
+  `;
+}
+
+// Kör en gång när sidan startar (om användaren redan är offline)
+renderOfflineBanner();
+
+// Lyssna på online/offline events och uppdatera bannern
+window.addEventListener("online", renderOfflineBanner);
+window.addEventListener("offline", renderOfflineBanner);
+
+/*
+   APP STATE
+*/
 const app = document.getElementById("app");
 let moviesCache = null;
 let favoriteKeySet = new Set();
 let ratingMap = new Map();
 
-// src/main.js
-
+/*
+   SERVICE WORKER REGISTRERING
+   (Använder ./sw.js så det funkar även om appen körs under
+   t.ex. /Frontend-PWA/ som base path)
+*/
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const reg = await navigator.serviceWorker.register("/sw.js");
+      const reg = await navigator.serviceWorker.register("./sw.js");
       console.log("✅ Service Worker registrerad:", reg.scope);
     } catch (err) {
       console.log("❌ Service Worker kunde inte registreras:", err);
     }
   });
 }
-
 
 function escapeHtml(s = "") {
   return String(s)
@@ -45,14 +86,20 @@ async function getAllMovies() {
 function getMovieByKey(movieKey) {
   if (!moviesCache) return null;
   return (
-    moviesCache.find((movie) => String(getKeyFromMovie(movie)) === String(movieKey)) || null
+    moviesCache.find(
+      (movie) => String(getKeyFromMovie(movie)) === String(movieKey)
+    ) || null
   );
 }
 
 async function refreshFavoriteKeySet() {
   try {
     const favorites = await getAllFavorites();
-    favoriteKeySet = new Set(favorites.map((movie) => String(movie.movieKey ?? getKeyFromMovie(movie))));
+    favoriteKeySet = new Set(
+      favorites.map((movie) =>
+        String(movie.movieKey ?? getKeyFromMovie(movie))
+      )
+    );
   } catch {
     favoriteKeySet = new Set();
   }
@@ -77,7 +124,12 @@ async function syncFavoriteIcons() {
 async function refreshRatingMap() {
   try {
     const ratings = await getAllRatings();
-    ratingMap = new Map(ratings.map((item) => [String(item.movieKey), Number(item.value || 0)]));
+    ratingMap = new Map(
+      ratings.map((item) => [
+        String(item.movieKey),
+        Number(item.value || 0),
+      ])
+    );
   } catch {
     ratingMap = new Map();
   }
@@ -173,7 +225,9 @@ async function renderTopRatedPage(searchQuery = "") {
     const movies = await getAllMovies();
     await refreshRatingMap();
     const filtered = filterMovies(movies, searchQuery);
-    const ratedMovies = filtered.filter((movie) => ratingMap.has(String(getKeyFromMovie(movie))));
+    const ratedMovies = filtered.filter((movie) =>
+      ratingMap.has(String(getKeyFromMovie(movie)))
+    );
     const sortedMovies = [...ratedMovies].sort((a, b) => {
       const aRate = ratingMap.get(String(getKeyFromMovie(a))) || 0;
       const bRate = ratingMap.get(String(getKeyFromMovie(b))) || 0;
@@ -186,7 +240,9 @@ async function renderTopRatedPage(searchQuery = "") {
     await syncFavoriteIcons();
     await syncRatingStars();
   } catch {
-    topRatedSection.innerHTML = errorMarkup("Could not load top rated movies right now.");
+    topRatedSection.innerHTML = errorMarkup(
+      "Could not load top rated movies right now."
+    );
   }
 }
 
@@ -201,11 +257,15 @@ async function renderFavoritesPage(searchQuery = "") {
     const filtered = filterMovies(favorites, searchQuery);
     favoritesSection.innerHTML = filtered.length
       ? MoviesCard(filtered, { allowRating: false })
-      : emptyMarkup(`No favorites found${searchQuery ? ` for "${searchQuery}"` : ""}.`);
+      : emptyMarkup(
+          `No favorites found${searchQuery ? ` for "${searchQuery}"` : ""}.`
+        );
     await syncFavoriteIcons();
     await syncRatingStars();
   } catch {
-    favoritesSection.innerHTML = errorMarkup("Could not load favorites from IndexedDB.");
+    favoritesSection.innerHTML = errorMarkup(
+      "Could not load favorites from IndexedDB."
+    );
   }
 }
 
@@ -216,13 +276,17 @@ async function renderMovieDetailsPage(movieId, searchQuery = "") {
     let movie = movies.find((m) => String(m.id ?? m.serial) === String(movieId));
     if (!movie) {
       const favorites = await getAllFavorites();
-      movie = favorites.find((m) => String(m.movieKey ?? m.id ?? m.serial) === String(movieId));
+      movie = favorites.find(
+        (m) => String(m.movieKey ?? m.id ?? m.serial) === String(movieId)
+      );
     }
     app.innerHTML = MovieDetailsPage(movie || null, searchQuery);
   } catch {
     try {
       const favorites = await getAllFavorites();
-      const movie = favorites.find((m) => String(m.movieKey ?? m.id ?? m.serial) === String(movieId));
+      const movie = favorites.find(
+        (m) => String(m.movieKey ?? m.id ?? m.serial) === String(movieId)
+      );
       app.innerHTML = MovieDetailsPage(movie || null, searchQuery);
     } catch {
       app.innerHTML = MovieDetailsPage(null, searchQuery);
