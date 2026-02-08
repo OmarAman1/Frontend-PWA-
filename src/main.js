@@ -6,6 +6,8 @@ import MovieDetailsPage from "./view/movieDetailsPage.js";
 import MoviesCard from "./view/moviesCard.js";
 import TopRatedPage from "./view/topRatedPage.js";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+
 
 import {
   getAllFavorites,
