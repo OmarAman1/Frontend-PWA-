@@ -3,16 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-
+    <!-- Resource hints for faster API connections -->
+    <link rel="dns-prefetch" href="https://potterhead-api.vercel.app">
+    <link rel="preconnect" href="https://potterhead-api.vercel.app" crossorigin>
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0f1428" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css"
-      integrity="sha512-t7Few9xlddEmgd3oKZQahkNI4dS6l80+eGEzFQiqtyVYdvcSG2D3Iub77R20BdotfRPA9caaRkg1tyaJiPmO0g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
     <!-- description -->
     <meta name="description" content="A Harry Potter movie database built as a Progressive Web App (PWA) using vanilla JavaScript, HTML, and CSS. Explore detailed information about all the Harry Potter movies, including cast, crew, and trivia. Experience fast loading times, offline access, and a responsive design for an immersive browsing experience."
     author="ChasAcademy"
@@ -45,9 +40,6 @@
   </head>
 
   <body>
-    <!-- Offline-banner visas när du tappar internet -->
-    <div id="offline-banner-root"></div>
-
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
