@@ -1,5 +1,6 @@
+import Footer from "./footerPage.js";
 import NavBar from "./NavbarPage.js";
- 
+
 function escapeHtml(s = "") {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -8,7 +9,7 @@ function escapeHtml(s = "") {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
- 
+
 function getProducerList(movie) {
   const directRaw =
     movie?.producers ??
@@ -17,13 +18,13 @@ function getProducerList(movie) {
     movie?.creators ??
     movie?.crew ??
     [];
- 
+
   const discoverRaw = Object.entries(movie || {})
     .filter(([key]) => /producer|creator|made|crew/i.test(key))
     .map(([, value]) => value);
- 
+
   const raw = Array.isArray(directRaw) ? [...directRaw, ...discoverRaw] : [directRaw, ...discoverRaw];
- 
+
   if (Array.isArray(raw)) {
     return raw
       .flatMap((item) => (Array.isArray(item) ? item : [item]))
@@ -42,7 +43,7 @@ function getProducerList(movie) {
       .filter(Boolean)
       .filter((p) => p.fullName);
   }
- 
+
   if (typeof raw === "string" && raw.trim()) {
     return raw
       .split(",")
@@ -50,10 +51,10 @@ function getProducerList(movie) {
       .filter(Boolean)
       .map((fullName) => ({ fullName }));
   }
- 
+
   return [];
 }
- 
+
 function getInitials(name = "") {
   return name
     .split(" ")
@@ -63,10 +64,10 @@ function getInitials(name = "") {
     .map((part) => part[0]?.toUpperCase() || "")
     .join("");
 }
- 
+
 function renderProducers(movie) {
   const producers = getProducerList(movie);
- 
+
   return `
     <section class="producers-section" aria-label="Producers">
       <h2 class="producers-title">Producers</h2>
@@ -80,7 +81,7 @@ function renderProducers(movie) {
                   const pid = escapeHtml(String(producer.id || `PR-${String(index + 1).padStart(2, "0")}`));
                   const avatar = escapeHtml(producer.avatar || "");
                   const initials = escapeHtml(getInitials(producer.fullName || "P"));
- 
+
                   return `
                     <article class="producer-card">
                       ${
@@ -103,7 +104,7 @@ function renderProducers(movie) {
     </section>
   `;
 }
- 
+
 export default function MovieDetailsPage(movie, searchQuery = "") {
   if (!movie) {
     return `
@@ -117,7 +118,7 @@ export default function MovieDetailsPage(movie, searchQuery = "") {
       </main>
     `;
   }
- 
+
   return `
     ${NavBar("movies", searchQuery)}
     <main class="container">
@@ -126,14 +127,14 @@ export default function MovieDetailsPage(movie, searchQuery = "") {
         <img class="details-poster"
              src="${escapeHtml(movie.poster || "")}"
              alt="${escapeHtml(movie.title || "Movie poster")}" />
- 
+
         <div class="details-content">
           <h1>${escapeHtml(movie.title || "Movie")}</h1>
           <p class="details-summary">${escapeHtml(movie.summary || "No summary available.")}</p>
           <p><strong>Release:</strong> ${escapeHtml(movie.release_date || "–")}</p>
           <p><strong>Runtime:</strong> ${escapeHtml(movie.running_time || "–")}</p>
           <p><strong>Rating:</strong> ${escapeHtml(movie.rating || "–")}</p>
- 
+
           <div class="details-actions">
             <a href="${escapeHtml(movie.trailer || "#")}"
                class="btn btn-primary"
@@ -149,10 +150,11 @@ export default function MovieDetailsPage(movie, searchQuery = "") {
             </a>
           </div>
         </div>
+
       </section>
       ${renderProducers(movie)}
     </main>
+    ${Footer()}
   `;
 }
- 
- 
+
