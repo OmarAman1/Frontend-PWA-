@@ -414,7 +414,6 @@ html, body {
 .site-footer {
   margin-top: 36px;
   padding: 26px 22px;
-  border-radius: 14px;
   background: linear-gradient(135deg, #111827, #1f2937);
   color: #f3f4f6;
   box-shadow: 0 14px 26px rgba(17, 24, 39, 0.28);
