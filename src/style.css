@@ -166,9 +166,9 @@ html, body {
   color: #4b5563;
 }
 
-.movies-card{
-  width: 100%;
-}
+/* .card_body {
+  padding: 12px;
+} */
 
 .movies-grid {
   width: 100%;
@@ -223,30 +223,31 @@ html, body {
 }
 
 .card {
-  background-color: #f9f9f9;
+  background-color: #eeeeee;
   border: none;
   border-radius: 8px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.52);
   width: 100%;
-  overflow: hidden;
+  border: 1px solid #d8d8d8;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 20px;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.24);
 }
 
-.movie-card {
+/* .movie-card {
   position: relative;
   cursor: pointer;
-}
+} */
 
-.card-img-top {
+/* .card-img-top {
   width: 100%;
   aspect-ratio: 2 / 3;
   object-fit: cover;
-}
+} */
 
 .favorite-btn {
   /* position: absolute; */
@@ -266,12 +267,12 @@ html, body {
   color: #ff6347;
 }
 
-.movie-summary {
+/* .movie-summary {
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
+} */
 
 .back-link {
   display: inline-block;

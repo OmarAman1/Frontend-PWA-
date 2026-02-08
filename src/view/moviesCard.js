@@ -26,18 +26,14 @@ export default function MoviesCard(movies, options = {}) {
             const iconId = `favIcon-${movieId || "x"}`;
 
             return `
-              <div class="movies-card">
-                <div class="card h-100 movie-card" id="${cardId}" data-movie-id="${movieId}">
 
-
-
-
-                  <img class="card-img-top m-0 p-0 movie-poster"
+                <div class="card h-100 movie-card__" id="${cardId}" data-movie-id="${movieId}">
+                  <img class="card-img-top m-0 p-0"
                        src="${escapeHtml(m.poster || "")}"
                        alt="${escapeHtml(m.title || "Movie poster")}"
                        loading="lazy" />
 
-                  <div class="card-body w-100 d-flex flex-column ">
+                  <div class="card__b">
                     <h5 class="card-title fw-bold">${escapeHtml(m.title || "Card title")}</h5>
 
 
@@ -73,7 +69,7 @@ export default function MoviesCard(movies, options = {}) {
 
 
 
-                  </div>
+             
                 </div>
               </div>
             `;
