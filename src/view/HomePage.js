@@ -1,3 +1,4 @@
+import Footer from "./footerPage";
 import NavBar from "./NavbarPage";
 
 
@@ -9,23 +10,10 @@ export default function Home(){
   return `
     ${NavBar()}
     <main class="container">
+    <h1 class="home-title">Welcome to Harry Potter Epics</h1>
       <section id="moviesSection">
       </section>
-      <footer class="site-footer">
-        <div class="footer-brand">
-          <h2>Harry Potter Epics</h2>
-          <p>Watchlists, trailers and stories from your favorite worlds.</p>
-        </div>
-
-        <div class="footer-links">
-          <a href="#">Now Showing</a>
-          <a href="#">Top Rated</a>
-          <a href="#">Coming Soon</a>
-          <a href="#">Contact</a>
-        </div>
-
-        <p class="footer-copy">© ${year} CineScope. All rights reserved.</p>
-      </footer>
     </main>
+    ${Footer()}
   `;
 }

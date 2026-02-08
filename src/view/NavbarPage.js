@@ -12,8 +12,8 @@ export default function NavBar(activePage = "home", searchQuery = ""){
   const isActive = (page) => (activePage === page ? "active" : "");
   const isCurrent = (page) => (activePage === page ? 'aria-current="page"' : "");
 
-return(`<nav class="navbar">
-  <div class="container-fluid movie-nav">
+return(`<nav class="navbar navbar-expand-lg ">
+  <div class="container-fluid">
     <a class="navbar-brand" href="?page=home">Harry Potter Epics</a>
     <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>

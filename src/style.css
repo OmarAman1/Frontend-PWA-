@@ -21,19 +21,27 @@ html, body {
   background: linear-gradient(135deg, #0f172a, #1e293b);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.28);
 }
-
-.movie-nav {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 14px 20px;
+.navbar .container-fluid {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
 }
 
-.navbar-brand {
-  color: #fbbf24;
+.navbar-nav a {
+  color: #e5e7eb;
+}
+
+.navbar-nav a:hover {
+  color: #d6f1f7;
+  border-radius: 8px within;
+  transition: background 0.3s, color 0.3s;
+}
+
+
+
+.navbar-brand, footer .footer-brand h2 {
+  color: #fbbf24 !important;
+  width: max-content;
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -65,6 +73,12 @@ html, body {
 }
 
 .navbar-collapse {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
   display: none;
   width: 100%;
 }
@@ -73,24 +87,6 @@ html, body {
   display: block;
 }
 
-.navbar-nav {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0 0 12px;
-  padding: 0;
-}
-
-.nav-item {
-  color: #fafafa;
-  font-weight: 600;
-}
-
-.nav-link {
-  color: #e5e7eb;
-  text-decoration: none;
-}
 
 .navbar .navbar-nav .nav-link.active,
 .navbar .navbar-nav .nav-link[aria-current="page"] {
@@ -127,7 +123,7 @@ html, body {
 
 .container {
   max-width: 1200px;
-  margin: 160px auto;
+  margin: 20px auto;
   padding: 0 20px;
   display: flex;
   justify-items: center;
@@ -292,7 +288,7 @@ html, body {
   background: #f8fafc;
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
 }
 
 .details-poster {
