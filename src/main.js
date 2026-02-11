@@ -8,7 +8,6 @@ import TopRatedPage from "./view/topRatedPage.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-
 import {
   getAllFavorites,
   getKeyFromMovie,
@@ -58,8 +57,8 @@ let ratingMap = new Map();
 
 /*
    SERVICE WORKER REGISTRERING
-   (Använder ./sw.js så det funkar även om appen körs under
-   t.ex. /Frontend-PWA/ som base path)
+   Använder ./sw.js så det funkar även om appen körs under
+   t.ex. /Frontend-PWA/ som base path
 */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
@@ -96,6 +95,24 @@ function getMovieByKey(movieKey) {
   );
 }
 
+function setFavoriteButtonA11y(button, isFavorite) {
+  if (!button) return;
+
+  button.setAttribute("aria-pressed", String(isFavorite));
+
+  const movieKey = String(button.dataset.movieId || "");
+  const movie = getMovieByKey(movieKey);
+  // om vi inte hittar filmen i cache, använd en generell text
+  const title = movie?.title ? String(movie.title) : "filmen";
+
+  button.setAttribute(
+    "aria-label",
+    isFavorite
+      ? `Ta bort ${title} från favoriter`
+      : `Lägg till ${title} i favoriter`
+  );
+}
+
 async function refreshFavoriteKeySet() {
   try {
     const favorites = await getAllFavorites();
@@ -121,7 +138,10 @@ async function syncFavoriteIcons() {
   buttons.forEach((button) => {
     const movieKey = String(button.dataset.movieId || "");
     const icon = button.querySelector("i");
-    setFavoriteIconState(icon, favoriteKeySet.has(movieKey));
+    const isFav = favoriteKeySet.has(movieKey);
+
+    setFavoriteIconState(icon, isFav);
+    setFavoriteButtonA11y(button, isFav);
   });
 }
 
@@ -129,10 +149,7 @@ async function refreshRatingMap() {
   try {
     const ratings = await getAllRatings();
     ratingMap = new Map(
-      ratings.map((item) => [
-        String(item.movieKey),
-        Number(item.value || 0),
-      ])
+      ratings.map((item) => [String(item.movieKey), Number(item.value || 0)])
     );
   } catch {
     ratingMap = new Map();
@@ -347,12 +364,14 @@ async function favoriteToggle(event) {
     await removeFavorite(movieKey);
     favoriteKeySet.delete(movieKey);
     setFavoriteIconState(icon, false);
+    setFavoriteButtonA11y(btn, false);
   } else {
     const movie = getMovieByKey(movieKey);
     if (!movie) return;
     await saveFavorite(movie);
     favoriteKeySet.add(movieKey);
     setFavoriteIconState(icon, true);
+    setFavoriteButtonA11y(btn, true);
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -375,6 +394,29 @@ async function handleStarClick(event) {
   await saveRating(movieId, selectedValue);
   ratingMap.set(String(movieId), selectedValue);
   paintStars(ratingInput, selectedValue);
+}
+
+/* stöd för Enter/Space på stjärnor (tangentbord) */
+function handleStarKeydown(event) {
+  const star = event.target.closest(".star[data-value]");
+  if (!star) return;
+
+  const ratingInput = star.closest(".rating-input[data-movie-id]");
+  if (!ratingInput) return;
+
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+
+  const selectedValue = Number(star.getAttribute("data-value") || "0");
+  if (!selectedValue) return;
+
+  const movieId = ratingInput.getAttribute("data-movie-id") || "";
+  if (!movieId) return;
+
+  saveRating(movieId, selectedValue).then(() => {
+    ratingMap.set(String(movieId), selectedValue);
+    paintStars(ratingInput, selectedValue);
+  });
 }
 
 function handleMovieCardNavigation(event) {
@@ -421,6 +463,7 @@ function handleSearchSubmit(event) {
 document.addEventListener("click", navbarToggle);
 document.addEventListener("click", favoriteToggle);
 document.addEventListener("click", handleStarClick);
+document.addEventListener("keydown", handleStarKeydown);
 document.addEventListener("click", handleMovieCardNavigation);
 document.addEventListener("submit", handleSearchSubmit);
 window.addEventListener("popstate", renderApp);
