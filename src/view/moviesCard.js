@@ -50,7 +50,8 @@ export default function MoviesCard(movies, options = {}) {
                     </div>
                   <button class="btn btn-link p-0 m-2 favorite-btn"
                           type="button"
-                          aria-label="Favorit"
+                          aria-label="Lägg till ${escapeHtml(m.title || "filmen")} i favoriter"
+                          aria-pressed="false"
                           data-serial="${serial}"
                           data-movie-id="${movieId}">
                     <i id="${iconId}" class="bi bi-heart"></i>
