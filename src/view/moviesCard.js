@@ -33,7 +33,6 @@ export default function MoviesCard(movies, options = {}) {
           src="${escapeHtml(m.poster || "")}"
           alt="${escapeHtml(m.title || "Movie poster")}"
           loading="${isLcp ? "eager" : "lazy"}"
-          fetchpriority="${isLcp ? "high" : "auto"}"
           decoding="async" />
 
                   <div class="card-body d-flex flex-column">

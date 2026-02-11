@@ -5,18 +5,22 @@ const APP_SHELL_CACHE = `app-shell-${CACHE_VERSION}`;
 const API_CACHE = `api-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
-// Här listar vi saker vi vill spara direkt vid installation
+const SCOPE_URL = self.registration?.scope || self.location.origin;
 const APP_SHELL_FILES = [
-  "/",                 // startsidan (Vite/SPA)
-  "/manifest.json",
-  "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png"
+  new URL("./", SCOPE_URL).toString(),
+  new URL("manifest.json", SCOPE_URL).toString(),
+  new URL("icons/icon-192x192.png", SCOPE_URL).toString(),
+  new URL("icons/icon-512x512.png", SCOPE_URL).toString(),
 ];
 
 // 1) INSTALL: spara app shell i cache
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(APP_SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_FILES))
+    caches.open(APP_SHELL_CACHE).then((cache) =>
+      cache.addAll(
+        APP_SHELL_FILES.map((url) => new Request(url, { cache: "reload" }))
+      )
+    )
   );
 
   self.skipWaiting();
@@ -42,7 +46,10 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
 
   // A) Cache API-svar (cache-first)
-  if (url.origin === "https://potterhead-api.vercel.app") {
+  if (
+    url.origin === "https://potterhead-api.vercel.app" &&
+    url.pathname.startsWith("/api")
+  ) {
     event.respondWith(cacheFirst(req, API_CACHE));
     return;
   }
@@ -83,10 +90,9 @@ async function runtimeCache(request) {
     // Om det är en sidnavigering (refresh på en route) returnera "/" som fallback
     if (!cached && request.mode === "navigate") {
       const shell = await caches.open(APP_SHELL_CACHE);
-      return shell.match("/");
+      return shell.match(new URL("./", SCOPE_URL).toString());
     }
 
     return cached || Response.error();
   }
 }
-

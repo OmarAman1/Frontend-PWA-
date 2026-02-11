@@ -65,12 +65,45 @@ function getInitials(name = "") {
     .join("");
 }
 
-function renderProducers(movie) {
-  const producers = getProducerList(movie);
+function normalizePeopleList(list = [], defaultTitle = "Actor") {
+  if (!Array.isArray(list)) return [];
+  return list
+    .flatMap((item) => (Array.isArray(item) ? item : [item]))
+    .map((item) => {
+      if (typeof item === "string") return { fullName: item, title: defaultTitle };
+      if (item && typeof item === "object") {
+        return {
+          id: item.id ?? item._id ?? item.code ?? item.slug ?? "",
+          title:
+            item.title ??
+            item.role ??
+            item.house ??
+            item.species ??
+            item.ancestry ??
+            defaultTitle,
+          fullName: item.fullName ?? item.name ?? item.full_name ?? "",
+          avatar: item.avatar ?? item.image ?? item.photo ?? "",
+        };
+      }
+      return null;
+    })
+    .filter(Boolean)
+    .filter((p) => p.fullName);
+}
+
+function renderProducers(movie, people = []) {
+  const hasPeople = Array.isArray(people) && people.length > 0;
+  const producers = hasPeople
+    ? normalizePeopleList(people, "Actor")
+    : getProducerList(movie);
+  const sectionTitle = hasPeople ? "Actors" : "Producers";
+  const emptyLabel = hasPeople
+    ? "No actors data available for this movie."
+    : "No producers data available for this movie.";
 
   return `
-    <section class="producers-section" aria-label="Producers">
-      <h2 class="producers-title">Producers</h2>
+    <section class="producers-section" aria-label="${sectionTitle}">
+      <h2 class="producers-title">${sectionTitle}</h2>
       <div class="producers-grid">
         ${producers.length
       ? producers
@@ -88,7 +121,7 @@ function renderProducers(movie) {
               : `<div class="producer-avatar producer-avatar-fallback" aria-hidden="true">${initials}</div>`
             }
                       <div class="producer-info">
-                        <span class="producer-id">${pid}</span>
+                        ${hasPeople ? "" : `<span class="producer-id">${pid}</span>`}
                         <p class="producer-role">${title}</p>
                         <p class="producer-name">${fullName}</p>
                       </div>
@@ -96,14 +129,15 @@ function renderProducers(movie) {
                   `;
         })
         .join("")
-      : `<article class="producer-card"><div class="producer-info"><p class="producer-name">No producers data available for this movie.</p></div></article>`
+      : `<article class="producer-card"><div class="producer-info"><p class="producer-name">${emptyLabel}</p></div></article>`
     }
       </div>
     </section>
   `;
 }
 
-export default function MovieDetailsPage(movie, searchQuery = "") {
+export default function MovieDetailsPage(movie, searchQuery = "", options = {}) {
+  const { characters = [] } = options;
   if (!movie) {
     return `
       <div class="details-page">
@@ -154,10 +188,9 @@ export default function MovieDetailsPage(movie, searchQuery = "") {
           </div>
 
         </section>
-        ${renderProducers(movie)}
+        ${renderProducers(movie, characters)}
       </main>
       ${Footer()}
     </div>
   `;
 }
-

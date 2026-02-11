@@ -10,8 +10,10 @@ const Footer = () => {
       </div>
 
       <div class="footer-links">
-        <a href="#">Top Rated</a>
-        <a href="#">Contact</a>
+      <a href="https://github.com/OmarAman1/Frontend-PWA-" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-github"></i>
+        GitHub
+      </a>
       </div>
 
       <p class="footer-copy">© ${year} Omar&David. All rights reserved.</p>

@@ -1,4 +1,4 @@
-import { getMovies } from "./api/swapi.js";
+import { getCharacters, getMovies } from "./api/swapi.js";
 import "./style.css";
 import FavoritesPage from "./view/favoritesPage.js";
 import Home from "./view/HomePage.js";
@@ -94,6 +94,96 @@ function getMovieByKey(movieKey) {
     ) || null
   );
 }
+
+function normalizeCharactersPayload(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && Array.isArray(payload.data)) return payload.data;
+  if (payload && Array.isArray(payload.results)) return payload.results;
+  return [];
+}
+
+function getMovieMatchTokens(movie) {
+  const tokens = new Set();
+  if (!movie) return [];
+  if (movie.id !== undefined && movie.id !== null) tokens.add(String(movie.id));
+  if (movie.serial !== undefined && movie.serial !== null) tokens.add(String(movie.serial));
+  if (movie.movieKey !== undefined && movie.movieKey !== null) tokens.add(String(movie.movieKey));
+  if (movie.title) tokens.add(String(movie.title));
+  if (movie.title && movie.release_date) {
+    tokens.add(`${movie.title} ${movie.release_date}`);
+  }
+  return Array.from(tokens).map((value) => value.toLowerCase());
+}
+
+function extractCharacterRefs(character) {
+  const keys = [
+    "movie",
+    "movies",
+    "film",
+    "films",
+    "appearances",
+    "appearsIn",
+    "appears_in",
+    "movieTitle",
+    "movie_title",
+    "movieId",
+    "movie_id",
+    "serial",
+    "title",
+  ];
+  const refs = [];
+  keys.forEach((key) => {
+    const value = character?.[key];
+    if (!value) return;
+    if (Array.isArray(value)) {
+      value.forEach((item) => refs.push(item));
+      return;
+    }
+    refs.push(value);
+  });
+  return refs;
+}
+
+function characterMatchesMovie(character, tokens) {
+  if (!tokens.length) return false;
+  const refs = extractCharacterRefs(character);
+  if (!refs.length) return false;
+
+  return refs.some((ref) => {
+    if (ref && typeof ref === "object") {
+      const candidates = [
+        ref.title,
+        ref.name,
+        ref.id,
+        ref.movieKey,
+        ref.serial,
+      ].filter(Boolean);
+      return candidates.some((value) =>
+        tokens.some((token) => String(value).toLowerCase().includes(token))
+      );
+    }
+    return tokens.some((token) =>
+      String(ref).toLowerCase().includes(token)
+    );
+  });
+}
+
+async function getCharactersForMovie(movie) {
+  if (!movie) return [];
+  try {
+    const payload = await getCharacters();
+    const allCharacters = normalizeCharactersPayload(payload);
+    const tokens = getMovieMatchTokens(movie);
+    const related = allCharacters.filter((character) =>
+      characterMatchesMovie(character, tokens)
+    );
+    const list = related.length ? related : allCharacters;
+    return list.slice(0, 12);
+  } catch {
+    return [];
+  }
+}
+
 
 function setFavoriteButtonA11y(button, isFavorite) {
   if (!button) return;
@@ -301,14 +391,16 @@ async function renderMovieDetailsPage(movieId, searchQuery = "") {
         (m) => String(m.movieKey ?? m.id ?? m.serial) === String(movieId)
       );
     }
-    app.innerHTML = MovieDetailsPage(movie || null, searchQuery);
+    const characters = await getCharactersForMovie(movie);
+    app.innerHTML = MovieDetailsPage(movie || null, searchQuery, { characters });
   } catch {
     try {
       const favorites = await getAllFavorites();
       const movie = favorites.find(
         (m) => String(m.movieKey ?? m.id ?? m.serial) === String(movieId)
       );
-      app.innerHTML = MovieDetailsPage(movie || null, searchQuery);
+      const characters = await getCharactersForMovie(movie);
+      app.innerHTML = MovieDetailsPage(movie || null, searchQuery, { characters });
     } catch {
       app.innerHTML = MovieDetailsPage(null, searchQuery);
     }

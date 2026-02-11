@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <!-- Resource hints for faster API connections -->
-    <link rel="dns-prefetch" href="https://potterhead-api.vercel.app">
+    <link rel="dns-prefetch" href="https://potterhead-api.vercel.app" crossorigin>
     <link rel="preconnect" href="https://potterhead-api.vercel.app" crossorigin>
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0f1428" />
@@ -40,7 +40,31 @@
   </head>
 
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="home-page app-shell">
+        <main class="container">
+          <section class="home-hero" aria-label="Featured Harry Potter epics">
+            <img
+              class="home-hero__image"
+              src="/hero-poster.svg"
+              alt="Harry Potter Epics featured poster"
+              width="360"
+              height="540"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <div class="home-hero__content">
+              <p class="home-hero__eyebrow">Wizarding world collection</p>
+              <h1 class="home-title">Welcome to Harry Potter Epics</h1>
+              <p class="home-hero__subtitle">
+                Discover every film, dive into trivia, and build your own favorites list.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
