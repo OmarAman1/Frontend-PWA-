@@ -15,6 +15,7 @@ export default function MoviesCard(movies, options = {}) {
 
   return `
     <section aria-label="Lista med filmer och serier" class="movies-grid">
+    <h2 class="visually-hidden">Filmlista</h2>
         ${list
       .map((m, idx) => {
         const isLcp = idx === 0;
