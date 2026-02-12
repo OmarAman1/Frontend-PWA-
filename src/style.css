@@ -551,7 +551,6 @@ body {
   background: #fff3cd;
   color: #664d03;
 }
-/* A11Y helpers */
 
 /* Tydlig fokusmarkering för tangentbordsanvändare */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
