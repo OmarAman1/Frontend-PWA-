@@ -63,7 +63,7 @@ let ratingMap = new Map();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const reg = await navigator.serviceWorker.register("./sw.js");
+      const reg = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
       console.log("✅ Service Worker registrerad:", reg.scope);
     } catch (err) {
       console.log("❌ Service Worker kunde inte registreras:", err);
