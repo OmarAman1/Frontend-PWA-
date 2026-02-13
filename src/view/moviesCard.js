@@ -65,11 +65,10 @@ export default function MoviesCard(movies, options = {}) {
                          target="_blank" rel="noreferrer"
                          ${m.trailer ? "" : "aria-disabled='true' onclick='return false;'"}>Trailer</a>
 
-                      <a href="${escapeHtml(m.wiki || "#")}"
+                      <a href="${escapeHtml(m.wiki ? "" : "aria-disabled='true' onclick='return false;'")}"
                          class="btn btn-secondary flex-fill"
-                          id="btn_wiki"
                          target="_blank" rel="noreferrer"
-                         ${m.wiki ? "" : "aria-disabled='true' onclick='return false;'"}>Wiki</a>
+                         >Wiki</a>
                     </div>
 
 
