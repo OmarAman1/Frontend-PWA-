@@ -13,7 +13,6 @@ export default function Home(){
     ${NavBar()}
     <main class="container">
       <!-- Offline-banner visas när du tappar internet -->
-    <div id="offline-banner-root"></div>
     <section class="home-hero" aria-label="Featured Harry Potter epics">
       <img
         class="home-hero__image"
