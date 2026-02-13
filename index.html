@@ -6,7 +6,7 @@
     <!-- Resource hints for faster API connections -->
     <link rel="dns-prefetch" href="https://potterhead-api.vercel.app" crossorigin>
     <link rel="preconnect" href="https://potterhead-api.vercel.app" crossorigin>
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="%BASE_URL%manifest.json" />
     <meta name="theme-color" content="#0f1428" />
     <!-- description -->
     <meta name="description" content="A Harry Potter movie database built as a Progressive Web App (PWA) using vanilla JavaScript, HTML, and CSS. Explore detailed information about all the Harry Potter movies, including cast, crew, and trivia. Experience fast loading times, offline access, and a responsive design for an immersive browsing experience."
@@ -38,39 +38,9 @@
     </script> -->
     <title>frontend-pwa-</title>
   </head>
-
   <body>
-    <body>
     <div id="offline-banner-root"></div>
     <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-</body>
-
-    <div id="app">
-      <div class="home-page app-shell">
-        <main class="container">
-          <section class="home-hero" aria-label="Featured Harry Potter epics">
-            <img
-              class="home-hero__image"
-              src="/hero-poster.svg"
-              alt="Harry Potter Epics featured poster"
-              width="360"
-              height="540"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
-            <div class="home-hero__content">
-              <p class="home-hero__eyebrow">Wizarding world collection</p>
-              <h1 class="home-title">Welcome to Harry Potter Epics</h1>
-              <p class="home-hero__subtitle">
-                Discover every film, dive into trivia, and build your own favorites list.
-              </p>
-            </div>
-          </section>
-        </main>
-      </div>
-    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
