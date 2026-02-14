@@ -4,8 +4,6 @@ import NavBar from "./NavbarPage";
 
 export default function Home(){
 
-
-  const year = new Date().getFullYear();
   const heroImageUrl = `${import.meta.env.BASE_URL}hero-poster.svg`;
 
   return `
@@ -18,8 +16,8 @@ export default function Home(){
         class="home-hero__image"
         src="${heroImageUrl}"
         alt="Harry Potter Epics featured poster"
-        width="360"
-        height="540"
+        width="340"
+        height="550"
         loading="eager"
         fetchpriority="high"
         decoding="async"

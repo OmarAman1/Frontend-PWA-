@@ -30,10 +30,13 @@ export default function MoviesCard(movies, options = {}) {
 
                 <div class="card h-100 movie-card" id="${cardId}" data-movie-id="${movieId}">
                 <img class="card-img"
-          src="${escapeHtml(m.poster || "")}"
-          alt="${escapeHtml(m.title || "Movie poster")}"
-          loading="${isLcp ? "eager" : "lazy"}"
-          decoding="async" />
+                  src="${escapeHtml(m.poster || "")}"
+                  alt="${escapeHtml(m.title || "Movie poster")}"
+                  width="540"
+                  height="778"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                  loading="${isLcp ? "eager" : "lazy"}"
+                  decoding="async" />
 
                   <div class="card-body d-flex flex-column">
                     <p class="card-title fw-bold">${escapeHtml(m.title || "Card title")}</p>

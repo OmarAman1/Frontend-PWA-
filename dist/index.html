@@ -13,10 +13,31 @@
     author="ChasAcademy"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.7.0/axe.min.js" defer></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.7.0/axe.min.js" defer></script>
     <script type="module" src="https://unpkg.com/web-vitals@4?module"></script>
+    <script type="module">
+        import { onLCP } from 'https://unpkg.com/web-vitals@4?module';
+        onLCP((metric) => {
+            console.log('LCP:', metric.value, 'ms', metric.entries[0].element);
+            const lcpDiv = document.getElementById('lcp-display') || document.createElement('div');
+            lcpDiv.id = 'lcp-display';
+            lcpDiv.style = 'position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; z-index: 10000; font-family: monospace;';
+            lcpDiv.innerText = `LCP: ${metric.value.toFixed(2)}ms`;
+            if (!document.getElementById('lcp-display')) document.body.appendChild(lcpDiv);
+        });
+
+        window.addEventListener('load', () => {
+            axe.run(document, (err, results) => {
+                if (err) throw err;
+                console.log('Axe Results:', results);
+                if (results.violations.length > 0) {
+                    console.warn('Axe Violations:', results.violations);
+                }
+            });
+        });
+    </script> -->
     <title>frontend-pwa-</title>
-    <script type="module" crossorigin src="/Frontend-PWA-/assets/index-BHIgr9SE.js"></script>
+    <script type="module" crossorigin src="/Frontend-PWA-/assets/index-BTBsFaRE.js"></script>
     <link rel="stylesheet" crossorigin href="/Frontend-PWA-/assets/index-CavLqY53.css">
   </head>
   <body>
